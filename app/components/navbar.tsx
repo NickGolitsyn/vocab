@@ -2,12 +2,20 @@ import Image from "next/image"
 import Link from "next/link"
 
 export default function Navbar() {
+  const date = new Date()
   return (
     <>
     <div className="flex justify-between my-5">
-      <Link href={"/"}>
-        <h1 className="text-4xl font-bold">Vocab.</h1>
-      </Link>
+      <div className="flex items-center">
+        <Link href={"/"}>
+          <h1 className="text-4xl font-bold">Vocab.</h1>
+        </Link>
+        <div className="ml-10">
+          {/* <Link className="mx-5" href={`/wod?date=${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`}>WOD</Link> */}
+          <Link className="mx-5" href={`/wod/${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}>WOD</Link>
+          <Link className="mx-5" href={"/learn"}>Learn</Link>
+        </div>
+      </div>
       <div className="flex items-center">
         <h1 className="mr-5">en</h1>
         <div className="rounded-full overflow-hidden w-fit">
@@ -19,10 +27,6 @@ export default function Navbar() {
           />
         </div>
       </div>
-    </div>
-    <div className="flex flex-col">
-      <Link href={"/word-of-the-day"}>WOD</Link>
-      <Link href={"/Learn"}>Learn</Link>
     </div>
     </>
   )
