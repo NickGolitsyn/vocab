@@ -12,7 +12,7 @@ export default function Navbar() {
         </Link>
         <div className="ml-10">
           {/* <Link className="mx-5" href={`/wod?date=${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`}>WOD</Link> */}
-          <Link className="mx-5" href={`/wod/${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}>WOD</Link>
+          <Link className="mx-5" href={`/wod/${('0' + date.getDate()).slice(-2)}-${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`}>WOD</Link>
           <Link className="mx-5" href={"/learn"}>Learn</Link>
         </div>
       </div>
