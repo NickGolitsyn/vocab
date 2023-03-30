@@ -3,6 +3,7 @@ import Link from "next/link"
 
 export default function Navbar() {
   const date = new Date()
+  const dateURL = `${('0' + date.getDate()).slice(-2)}-${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`
   return (
     <>
     <div className="flex justify-between my-5">
@@ -12,7 +13,7 @@ export default function Navbar() {
         </Link>
         <div className="ml-10">
           {/* <Link className="mx-5" href={`/wod?date=${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`}>WOD</Link> */}
-          <Link className="mx-5" href={`/wod/${('0' + date.getDate()).slice(-2)}-${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`}>WOD</Link>
+          <Link className="mx-5" href={`/wod/${dateURL}`}>WOD</Link>
           <Link className="mx-5" href={"/learn"}>Learn</Link>
         </div>
       </div>
@@ -21,8 +22,8 @@ export default function Navbar() {
         <div className="rounded-full overflow-hidden w-fit">
           <Image 
             src="/pic.jpeg"
-            width={50}
-            height={50} 
+            width={40}
+            height={40} 
             alt={""}
           />
         </div>

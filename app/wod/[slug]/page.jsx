@@ -1,14 +1,16 @@
 'use client'
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation'; 
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
-import Link from 'next/link'
+import React from 'react';
+import Image from "next/image"
 
 export default function page() {
   const [data, setData] = useState('');
 
   const [definition, setDefinition] = useState('');
+  const [meanings, setMeanings] = useState('');
   const [phonetic, setPhonetic] = useState('');
   const [def, setDef] = useState('');
   const [audio, setAudio] = useState(null);
@@ -36,13 +38,27 @@ export default function page() {
       setData(docSnap.data().word);
     } else {
       console.log('No such document!');
+      router.push('/wod');
     }
   }
 
   useEffect(() => {
-    // console.log(`${dateYear}-${dateMonth}-${dateDay}`);
+    console.log("date:" + `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`);
+    checkDate();
     getData();
   }, []);
+
+  const checkDate = () => {
+    const dateChosen = new Date(path.split('-').reverse().join('-'));
+    const today = new Date();
+    const march20 = new Date('2023-03-20');
+    console.log(`Date Chosen: ${dateChosen}`);
+    console.log(`Today: ${today}`);
+    console.log(`March 20: ${march20}`);
+    if (dateChosen < march20 || dateChosen > today) {
+      router.replace('/wod');
+    }
+  }
 
   useEffect(() => {
     async function getDefinition() {
@@ -51,6 +67,8 @@ export default function page() {
           `https://api.dictionaryapi.dev/api/v2/entries/en/${data}`
         );
         const json = await res.json();
+        setMeanings(json);
+        console.log(meanings);
         console.log(json);
         setDefinition(json[0].meanings[0].definitions[0].definition);
         setPhonetic(json[0].phonetics[1].text);
@@ -83,24 +101,52 @@ export default function page() {
 
   return (
     <div>
-      <h2 className='text-2xl'>Word Of The Day</h2>
+      <h2 className='text-2xl font-bold'>Word Of The Day</h2>
       <input  
         type="date" 
         inputMode='none' 
         value={input} 
         onChange={handleDateClicked} 
-        min="2023-03-20" 
+        min="2023-03-24" 
         max={`${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`}
       />
-      <h3 className='text-4xl'>{data && data.toUpperCase()}</h3>
-      {audio && <button onClick={start}>Play</button>}
-      <p>{phonetic && phonetic}</p>
-      <p>Definition:</p>
-      <ol>{def && def.map((e) => (
-        <>{e.definitions.map((e) => (
-          <li key="{e.definition}">{e.definition}</li>
-        ))}</>
-      ))}</ol>
+      <h3 className='text-4xl font-bold'>{data && data.toUpperCase()}</h3>
+      <div className='flex gap-5 my-2'>
+        {audio && (
+          // <button onClick={start}>Play</button>
+          <Image 
+            onClick={start}
+            src="/play.svg"
+            width={26}
+            height={26} 
+            alt={""}
+          />
+        )}
+        <p>{phonetic && phonetic}</p>
+      </div>
+      <h4 className='text-3xl font-bold'>Definition:</h4>
+      {/* <ol>{def && def.map((e, i) => (
+        <React.Fragment key={i}>{e.definitions.map((e) => (
+          <li key={e.definition}>{e.definition}</li>
+        ))}</React.Fragment>
+      ))}</ol> */}
+
+      <ol className='ml-2 my-1'>
+        {meanings && meanings?.title != 'No Definitions Found' && meanings.map((mean) =>
+          mean.meanings.map((item) =>
+            item.definitions.slice(0, 2).map((def, index) => (
+              <React.Fragment key={index}>
+                <li>{def.definition}</li>
+                {/* {def.example && (
+                  <span>
+                    <h1>Example :</h1> {def.example}
+                  </span>
+                )} */}
+              </React.Fragment>
+            ))
+          )
+        )}
+      </ol>
     </div>
   );
 }

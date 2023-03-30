@@ -24,8 +24,12 @@ h3, h4, h5, h6, p, span, div {
 }
 
 [type="date"] {
-  /* background: #EDEEEB url(../public/callbtn.png) 97% 50% no-repeat; */
-  background: #EDEEEB;
+  /* background: #EDEEEB url(/callbtn.png) 97% 50% no-repeat; */
+  /* background: #EDEEEB url(/calendar.svg) 97% 50% no-repeat; */
+  background: #EDEEEB url(/calbtn.svg) 85% 50% no-repeat;
+  /* background-size: 1.8rem; */
+  background-size: 10%;
+  /* background: #EDEEEB; */
   border: 1px solid transparent;
   width: 10rem;
   padding: 0.5rem;
@@ -37,13 +41,13 @@ h3, h4, h5, h6, p, span, div {
   border-radius: 0.5rem;
 }
 
-/* [type="date"]::-webkit-inner-spin-button {
+[type="date"]::-webkit-inner-spin-button {
   display: none;
 } 
 
 [type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0;
-} */
+}
 
 li {
   list-style-type: decimal;
