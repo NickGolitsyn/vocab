@@ -14,10 +14,11 @@ export default function page() {
   const [phonetic, setPhonetic] = useState('');
   const [def, setDef] = useState('');
   const [audio, setAudio] = useState(null);
-
+  
   const pathname = usePathname();
   const router = useRouter();
   const path = pathname.split('/')[2];
+  const [btnDate, setBtndate] = useState(new Date(path.split('-').reverse().join('-')));
   const pathDate = path.split('-');
   const date = new Date();
   // const dateDay = ('0' + date[0]).slice(-2)
@@ -34,7 +35,6 @@ export default function page() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      console.log('Document data:', docSnap.data());
       setData(docSnap.data().word);
     } else {
       console.log('No such document!');
@@ -43,7 +43,6 @@ export default function page() {
   }
 
   useEffect(() => {
-    console.log("date:" + `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`);
     checkDate();
     getData();
   }, []);
@@ -51,15 +50,17 @@ export default function page() {
   const checkDate = () => {
     const dateChosen = new Date(path.split('-').reverse().join('-'));
     const today = new Date();
+    if (dateChosen > today) {
+      console.log('should redirect');
+    } else {
+      console.log('should not');
+    }
     const march20 = new Date('2023-03-20');
-    console.log(`Date Chosen: ${dateChosen}`);
-    console.log(`Today: ${today}`);
-    console.log(`March 20: ${march20}`);
     if (dateChosen < march20 || dateChosen > today) {
       router.replace('/wod');
     }
   }
-
+  
   useEffect(() => {
     async function getDefinition() {
       try {
@@ -68,11 +69,11 @@ export default function page() {
         );
         const json = await res.json();
         setMeanings(json);
-        console.log(meanings);
-        console.log(json);
-        setDefinition(json[0].meanings[0].definitions[0].definition);
-        setPhonetic(json[0].phonetics[1].text);
-        setDef(json[0].meanings);
+        // setDefinition(json[0].meanings[0].definitions[0].definition);
+        if (json[0].phonetics[0].audio) {
+          setPhonetic(json[0].phonetics[1].text);
+        }
+        // setDef(json[0].meanings);
         if (json[0].phonetics[0].audio) {
           setAudio(new Audio(json[0].phonetics[0].audio));
         }
@@ -93,23 +94,44 @@ export default function page() {
   }
 
   const start = () => {
-    console.log(audio.src);
     if (audio) {
       audio.play();
     }
   }
 
+  const handleBackClick = () => {
+    const newDate = new Date(btnDate.getTime() - 24 * 60 * 60 * 1000);
+    setBtndate(newDate);
+  };
+
+  const handleForwardClick = () => {
+    const newDate = new Date(btnDate.getTime() + 24 * 60 * 60 * 1000);
+    setBtndate(newDate);
+  };
+
+  const isBackDisabled = btnDate <= new Date('2023-03-24');
+  const isForwardDisabled = btnDate >= new Date().getTime() - 24 * 60 * 60 * 1000;
+
+  useEffect(() => {
+    const formattedDate = btnDate.toISOString().split('T')[0].split('-').reverse().join('-');
+    router.push(`/wod/${formattedDate}`);
+  }, [btnDate]);
+
   return (
     <div>
       <h2 className='text-2xl font-bold'>Word Of The Day</h2>
-      <input  
-        type="date" 
-        inputMode='none' 
-        value={input} 
-        onChange={handleDateClicked} 
-        min="2023-03-24" 
-        max={`${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`}
-      />
+      <div className='flex'>
+        <button onClick={handleBackClick} disabled={isBackDisabled} className="font-black text-2xl">&lt;</button>
+        <input  
+          type="date" 
+          inputMode='none' 
+          value={input} 
+          onChange={handleDateClicked} 
+          min="2023-03-24" 
+          max={`${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`}
+        />
+        <button onClick={handleForwardClick} disabled={isForwardDisabled} className="font-black text-2xl">&gt;</button>
+      </div>
       <h3 className='text-4xl font-bold'>{data && data.toUpperCase()}</h3>
       <div className='flex gap-5 my-2'>
         {audio && (

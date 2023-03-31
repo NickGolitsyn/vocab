@@ -26,7 +26,7 @@ h3, h4, h5, h6, p, span, div {
 [type="date"] {
   /* background: #EDEEEB url(/callbtn.png) 97% 50% no-repeat; */
   /* background: #EDEEEB url(/calendar.svg) 97% 50% no-repeat; */
-  background: #EDEEEB url(/calbtn.svg) 85% 50% no-repeat;
+  background: #EDEEEB url(/calbtn.svg) 90% 50% no-repeat;
   /* background-size: 1.8rem; */
   background-size: 10%;
   /* background: #EDEEEB; */
@@ -47,6 +47,11 @@ h3, h4, h5, h6, p, span, div {
 
 [type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0;
+}
+
+button:disabled,
+button[disabled] {
+  color: #808080;
 }
 
 li {
