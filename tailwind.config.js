@@ -6,6 +6,11 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    colors: {
+      'customGrey': '#4B4D61',
+      'customWhite': '#EDEEEB',
+      'fff': '#FFFFFF'
+    },
     extend: {
       fontFamily: {
         volkhov: ['var(--font-volkhov)'],

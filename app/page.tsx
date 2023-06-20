@@ -1,23 +1,19 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
-
-const inter = Inter({ subsets: ['latin'] })
+'use client'
+import React, { useEffect } from 'react'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+  const date = new Date()
+  const dateURL = `${('0' + date.getDate()).slice(-2)}-${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`
+  useEffect(() => {
+    router.replace(`/wod/${dateURL}`)
+  }, [])
   return (
-    <main>
-      <div className='flex text-2xl justify-around mx-44 my-10'>
-        <h2 className='font-bold'>English</h2>
-        <h2>Serbian</h2>
-        <h2>Russian</h2>
-      </div>
-      <div className='flex text-2xl justify-between mx-44 my-10'>
-        <h2>&lt;</h2>
-        <h2>Tue</h2>
-        <h2>Wed</h2>
-        <h2 className='font-bold'>Today</h2>
-      </div>
-    </main>
+    <div>
+      <span>Redirect to today day:</span> 
+      <Link href={`/wod/${dateURL}`}>Today</Link>  
+    </div>
   )
 }

@@ -13,7 +13,7 @@ export default function page() {
   return (
     <div>
       <span>Redirect to today day:</span> 
-      <Link href={`/wod/${dateURL}`}></Link>  
+      <Link href={`/wod/${dateURL}`}>Today</Link>  
     </div>
   )
 }

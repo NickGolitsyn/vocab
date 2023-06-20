@@ -5,9 +5,11 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import React from 'react';
 import Image from "next/image"
+import { useAuthContext } from '@/context/AuthContext';
 
 export default function page() {
   const [data, setData] = useState('');
+  const { user } = useAuthContext();
 
   const [definition, setDefinition] = useState('');
   const [meanings, setMeanings] = useState('');
@@ -21,13 +23,6 @@ export default function page() {
   const [btnDate, setBtndate] = useState(new Date(path.split('-').reverse().join('-')));
   const pathDate = path.split('-');
   const date = new Date();
-  // const dateDay = ('0' + date[0]).slice(-2)
-  // const dateMonth = ('0' + date[1]).slice(-2)
-  // const dateYear = date.getFullYear()
-  // const [day, setDay] = useState(date.getDate());
-  // let day = date.getDate()
-  // const [day, setDay] = useState(new Date().getDate());
-  const [day, setDay] = useState(27);
   const [input, setInput] = useState(`${pathDate[2]}-${pathDate[1]}-${pathDate[0]}`);
 
   async function getData() {
@@ -38,13 +33,14 @@ export default function page() {
       setData(docSnap.data().word);
     } else {
       console.log('No such document!');
-      router.push('/wod');
+      // router.push('/wod');
     }
   }
 
   useEffect(() => {
     checkDate();
     getData();
+    console.log(user.uid);
   }, []);
 
   const checkDate = () => {
@@ -52,6 +48,8 @@ export default function page() {
     const today = new Date();
     if (dateChosen > today) {
       console.log('should redirect');
+      // router.replace(`/wod`)
+      router.push('/wod/05-05-2023')
     } else {
       console.log('should not');
     }
@@ -60,6 +58,10 @@ export default function page() {
       router.replace('/wod');
     }
   }
+
+  // useEffect(() => {
+  //   router.replace(`/wod/${dateURL}`)
+  // }, [])
   
   useEffect(() => {
     async function getDefinition() {
@@ -146,7 +148,8 @@ export default function page() {
         )}
         <p>{phonetic && phonetic}</p>
       </div>
-      <h4 className='text-3xl font-bold'>Definition:</h4>
+      {!meanings && <h1>Word Of The Day Missing!</h1>}
+      {meanings && <h4 className='text-3xl font-bold'>Definition:</h4>}
       {/* <ol>{def && def.map((e, i) => (
         <React.Fragment key={i}>{e.definitions.map((e) => (
           <li key={e.definition}>{e.definition}</li>
