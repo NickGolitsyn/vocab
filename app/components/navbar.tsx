@@ -1,11 +1,13 @@
+'use client'
 import { useAuthContext } from "@/context/AuthContext"
 import Image from "next/image"
 import Link from "next/link"
 import { auth } from "@/config/firebase";
 import { signOut } from 'firebase/auth';
+import { useEffect, useState } from "react";
 
-export default function Navbar() {
-  const { user } = useAuthContext()
+export default function Navbar() { 
+  // const { user } = useAuthContext()
   const date = new Date()
   const dateURL = `${('0' + date.getDate()).slice(-2)}-${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`
   const handleLogout = () => {
@@ -32,8 +34,8 @@ export default function Navbar() {
       </div>
       <div className="flex items-center">
         {/* <h1 className="mr-5">en</h1> */}
-        {user?.displayName && <h1 className="mr-5">{user?.displayName}</h1>}
-        {!user?.displayName && <h1 className="mr-5">{user?.email}</h1>}
+        {/* {user?.displayName && <h1 className="mr-5">{user?.displayName}</h1>}
+        {!user?.displayName && <h1 className="mr-5">{user?.email}</h1>} */}
         {/* <div className="rounded-full overflow-hidden w-fit">
           <Image 
             src="/pic.jpeg"
@@ -42,7 +44,7 @@ export default function Navbar() {
             alt={""}
           />
         </div> */}
-        {user ? 
+        {/* {user ? 
           <button className="py-3 px-4 rounded-md bg-customGrey hover:opacity-90 transition text-customWhite" onClick={() => (handleLogout())}>Log Out</button> : 
           (
             <div>
@@ -51,7 +53,7 @@ export default function Navbar() {
               {user?.email == 'golitsynnick@gmail.com' ? <Link className="py-3 px-4 rounded-md bg-customGrey hover:opacity-90 transition text-customWhite ml-4" href={"/admin"}>Admin</Link> : ''}
             </div>
           )
-        }
+        } */}
       </div>
     </div>
     </>
