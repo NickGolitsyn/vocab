@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/learn/error.js", "app/wod/[pid].jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/learn/error.js", "app/wod/[pid].jsx", "app/components/navbar.jsx"],
   "exclude": ["node_modules"]
 }
