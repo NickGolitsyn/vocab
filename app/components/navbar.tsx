@@ -44,6 +44,7 @@ export default function Navbar() {
             alt={""}
           />
         </div> */}
+        <button className="py-3 px-4 rounded-md bg-customGrey hover:opacity-90 transition text-customWhite" onClick={() => (handleLogout())}>Log Out</button>
         {/* {user ? 
           <button className="py-3 px-4 rounded-md bg-customGrey hover:opacity-90 transition text-customWhite" onClick={() => (handleLogout())}>Log Out</button> : 
           (

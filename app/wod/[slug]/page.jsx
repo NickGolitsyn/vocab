@@ -40,7 +40,7 @@ export default function page() {
   useEffect(() => {
     checkDate();
     getData();
-    console.log(user.uid);
+    console.log(user?.uid);
   }, []);
 
   const checkDate = () => {
