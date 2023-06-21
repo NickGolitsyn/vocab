@@ -5,7 +5,7 @@ import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
 import React from 'react';
 import Image from "next/image"
 import { useAuthContext } from '@/context/AuthContext';
-import { setDoc, query, where, getDocs } from "firebase/firestore";
+import { setDoc, query, where, getDocs, deleteDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 
 export default function page() {
@@ -25,6 +25,7 @@ export default function page() {
   const pathDate = path.split('-');
   const date = new Date();
   const [input, setInput] = useState(`${pathDate[2]}-${pathDate[1]}-${pathDate[0]}`);
+  const [isSaved, setIsSaved] = useState(false);
 
   async function getData() {
     const docRef = doc(db, 'words', `${path}-en`);
@@ -56,6 +57,20 @@ export default function page() {
   //   }
   //   return { error, results }
   // }
+  const checkSavedWord = async () => {
+    if(user) {
+      const savedWordsRef = collection(db, "saved_words");
+      const savedWordsQuery = query(
+        savedWordsRef,
+        where("word", "==", data),
+        where("uid", "==", user?.uid)
+      );
+      const querySnapshot = await getDocs(savedWordsQuery);
+
+      setIsSaved(!querySnapshot.empty);
+    }
+    return
+  };
 
   const saveWord = async () => {
     try {
@@ -81,8 +96,31 @@ export default function page() {
         word: data,
       });
       console.log('Word saved successfully:', newWordRef.id);
+      checkSavedWord();
     } catch (error) {
       console.log('Error saving word:', error);
+    }
+  };
+
+  const removeWord = async () => {
+    try {
+      const savedWordsRef = collection(db, "saved_words");
+      const savedWordsQuery = query(
+        savedWordsRef,
+        where("word", "==", data),
+        where("uid", "==", user?.uid)
+      );
+      const querySnapshot = await getDocs(savedWordsQuery);
+
+      if (!querySnapshot.empty) {
+        const docId = querySnapshot.docs[0].id;
+        const wordDocRef = doc(db, "saved_words", docId);
+        await deleteDoc(wordDocRef);
+        checkSavedWord();
+        console.log('document removed');
+      }
+    } catch (error) {
+      console.error("Error removing document: ", error);
     }
   };
 
@@ -168,9 +206,13 @@ export default function page() {
     router.push(`/wod/${formattedDate}`);
   }, [btnDate]);
 
+  useEffect(() => {
+    checkSavedWord();
+  }, [data, user]);
+
   return (
     <div>
-      <h2 className='text-2xl font-bold'>Word Of The Day</h2>
+      <h2 className='text-md md:text-2xl font-bold'>Word Of The Day</h2>
       <div className='flex'>
         <button onClick={handleBackClick} disabled={isBackDisabled} className="font-black text-2xl">&lt;</button>
         <input  
@@ -183,13 +225,41 @@ export default function page() {
         />
         <button onClick={handleForwardClick} disabled={isForwardDisabled} className="font-black text-2xl">&gt;</button>
       </div>
-      <h3 className='text-4xl font-bold'>{data && data.toUpperCase()}</h3>
+      <div className='flex'>
+        <h3 className='text-xl md:text-4xl font-bold mr-5'>{data && data.toUpperCase()}</h3>
+        {isSaved ? (
+          <div className='flex flex-col items-center'>
+            <Image
+              onClick={removeWord}
+              src="/savefill.svg"
+              className="cursor-pointer"
+              width={26}
+              height={26}
+              alt=""
+            />
+            <span className='text-xs'>Remove</span>
+          </div>
+        ) : (
+          <div className='flex flex-col items-center'>
+            <Image
+              onClick={saveWord}
+              src="/save.svg"
+              className="cursor-pointer"
+              width={26}
+              height={26}
+              alt=""
+            />
+            <span className='text-xs'>Save</span>
+          </div>
+        )}
+      </div>
       <div className='flex gap-5 my-2'>
         {audio && (
           // <button onClick={start}>Play</button>
           <Image 
             onClick={start}
             src="/play.svg"
+            className='cursor-pointer'
             width={26}
             height={26} 
             alt={""}
@@ -198,7 +268,7 @@ export default function page() {
         <p>{phonetic && phonetic}</p>
       </div>
       {!meanings && <h1>Word Of The Day Missing!</h1>}
-      {meanings && <h4 className='text-3xl font-bold'>Definition:</h4>}
+      {meanings && <h4 className='text-md md:text-3xl font-bold'>Definition:</h4>}
       {/* <ol>{def && def.map((e, i) => (
         <React.Fragment key={i}>{e.definitions.map((e) => (
           <li key={e.definition}>{e.definition}</li>
@@ -210,7 +280,7 @@ export default function page() {
           mean.meanings.map((item) =>
             item.definitions.slice(0, 2).map((def, index) => (
               <React.Fragment key={index}>
-                <li>{def.definition}</li>
+                <li className='text-sm md:text-base'>{def.definition}</li>
                 {/* {def.example && (
                   <span>
                     <h1>Example :</h1> {def.example}
@@ -221,7 +291,6 @@ export default function page() {
           )
         )}
       </ol>
-      <button onClick={saveWord}>Save Word</button>
     </div>
   );
 }

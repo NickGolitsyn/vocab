@@ -43,9 +43,9 @@ function Page() {
       return definition;
     }
 
-    // useEffect(() => {
-    //   if (user?.email !== "golitsynnick@gmail.com") router.push("/")
-    // }, [user])
+    useEffect(() => {
+      if (user?.email !== "golitsynnick@gmail.com") router.push("/")
+    }, [user])
 
     const handleForm = async (e) => {
       let error = null

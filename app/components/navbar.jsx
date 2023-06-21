@@ -34,8 +34,8 @@ export default function Navbar() {
       </div>
       <div className="items-center hidden sm:flex">
         {/* <h1 className="mr-5">en</h1> */}
-        {user?.displayName && <h1 className="mr-5">{user?.displayName}</h1>}
-        {!user?.displayName && <h1 className="mr-5">{user?.email}</h1>}
+        {user?.displayName && <Link className="mr-5" href={"/profile"}>{user?.displayName}</Link>}
+        {!user?.displayName && <Link className="mr-5" href={"/profile"}>{user?.email}</Link>}
         {/* <div className="rounded-full overflow-hidden w-fit">
           <Image 
             src="/pic.jpeg"

@@ -4,15 +4,15 @@ import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase
 const auth = getAuth(firebase_app);
 
 
-export default async function signUp(displayName, email, password) {
+export default async function signUp(email, password) {
   let result = null,
     error = null;
   try {
     result = await createUserWithEmailAndPassword(auth, email, password);
     try {
-      updateProfile(user, {
-        displayName: displayName
-      })
+      // updateProfile(user, {
+      //   displayName: displayName
+      // })
     } catch (e) {
       error = e;
     }

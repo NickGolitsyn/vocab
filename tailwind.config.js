@@ -9,7 +9,8 @@ module.exports = {
     colors: {
       'customGrey': '#4B4D61',
       'customWhite': '#EDEEEB',
-      'fff': '#FFFFFF'
+      'fff': '#FFFFFF',
+      'redError': '#F34545'
     },
     extend: {
       fontFamily: {
