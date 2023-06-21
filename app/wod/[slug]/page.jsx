@@ -1,11 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation'; 
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../../config/firebase';
+import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
 import React from 'react';
 import Image from "next/image"
 import { useAuthContext } from '@/context/AuthContext';
+import { setDoc, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/config/firebase";
 
 export default function page() {
   const [data, setData] = useState('');
@@ -36,6 +37,54 @@ export default function page() {
       // router.push('/wod');
     }
   }
+
+  // const saveWord = async (e) => {
+  //   let error = null
+  //   let results = null
+  //   try {
+  //     console.log('trying to add word');
+  //     let results = await addDoc(collection(db, "saved_words"), {
+  //       word: data,
+  //       uid: user?.uid
+  //     });
+  //     console.log(results);
+  //     console.log('finished trying');
+  //   } catch (e) {
+  //     console.log('error');
+  //     console.log(e);
+  //     error = e
+  //   }
+  //   return { error, results }
+  // }
+
+  const saveWord = async () => {
+    try {
+      if (!user) {
+        // User is not signed in, redirect to the sign-in page
+        router.push('/signin');
+        return;
+      }
+      // Check if the word has already been saved by the user
+      const savedWordsRef = collection(db, 'saved_words');
+      const queryRef = query(savedWordsRef, where('uid', '==', user.uid), where('word', '==', data));
+      const querySnapshot = await getDocs(queryRef);
+      console.log(querySnapshot);
+
+      if (!querySnapshot.empty) {
+        console.log('Word already saved!');
+        return;
+      }
+
+      // Save the word to the user's saved_words collection
+      const newWordRef = await addDoc(savedWordsRef, {
+        uid: user.uid,
+        word: data,
+      });
+      console.log('Word saved successfully:', newWordRef.id);
+    } catch (error) {
+      console.log('Error saving word:', error);
+    }
+  };
 
   useEffect(() => {
     checkDate();
@@ -172,6 +221,7 @@ export default function page() {
           )
         )}
       </ol>
+      <button onClick={saveWord}>Save Word</button>
     </div>
   );
 }

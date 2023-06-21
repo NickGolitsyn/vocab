@@ -1,9 +1,9 @@
 'use client'
 import { AuthContextProvider } from '@/context/AuthContext'
-import Navbar from './components/navbar'
 import './globals.css'
 import { Volkhov } from 'next/font/google'
 import { Tinos } from 'next/font/google'
+import Navbar from './components/navbar'
 
 const volkhov = Volkhov({
   weight: ["400", "700"],
@@ -29,10 +29,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${tinos.className, volkhov.className} mx-32`}>
+      <body className={`${tinos.className, volkhov.className} mx-3 sm:mx-10 md:mx-20 lg:mx-32`}>
         <AuthContextProvider>
         <Navbar />
-        <div className='mx-32'>
+        <div className='mx-3 sm:mx-10 md:mx-20 lg:mx-32'>
           {children}
         </div>
         </AuthContextProvider>

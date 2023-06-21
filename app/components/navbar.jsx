@@ -1,10 +1,10 @@
-'use client'
 import { useAuthContext } from "@/context/AuthContext"
 import Image from "next/image"
 import Link from "next/link"
 import { auth } from "@/config/firebase";
 import { signOut } from 'firebase/auth';
 import { useEffect, useState } from "react";
+import HamburgerMenu from './hamburgerMenu'
 
 export default function Navbar() { 
   const { user } = useAuthContext()
@@ -20,19 +20,19 @@ export default function Navbar() {
       })
   }
   return (
-    <>
-    <div className="flex justify-between my-5">
+    <div className="flex items-center justify-between">
+    <div className="flex justify-between my-5 w-full">
       <div className="flex items-center">
         <Link href={"/"}>
           <h1 className="text-4xl font-bold">Vocab.</h1>
         </Link>
-        <div className="ml-10">
+        <div className="ml-10 hidden sm:block">
           {/* <Link className="mx-5" href={`/wod?date=${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`}>WOD</Link> */}
           <Link className="mx-5" href={`/wod/${dateURL}`}>WOD</Link>
           <Link className="mx-5" href={"/learn"}>Learn</Link>
         </div>
       </div>
-      <div className="flex items-center">
+      <div className="items-center hidden sm:flex">
         {/* <h1 className="mr-5">en</h1> */}
         {user?.displayName && <h1 className="mr-5">{user?.displayName}</h1>}
         {!user?.displayName && <h1 className="mr-5">{user?.email}</h1>}
@@ -55,7 +55,12 @@ export default function Navbar() {
           )
         }
       </div>
+      {/* <div className="flex justify-between my-5"> */}
+        {/* <div className="flex items-center"> */}
+        {/* </div> */}
+      {/* </div> */}
     </div>
-    </>
+    <HamburgerMenu />
+    </div>
   )
 }
