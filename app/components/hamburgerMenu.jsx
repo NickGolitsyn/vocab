@@ -57,8 +57,8 @@ export default function HamburgerMenu() {
               <Link onClick={() => toggleMenu()} className="my-3" href={"/learn"}>Learn</Link>
             </div>
             <div className="flex flex-col items-center">
-              {user?.displayName && <h1 className="my-3">{user?.displayName}</h1>}
-              {!user?.displayName && <h1 className="my-3">{user?.email}</h1>}
+            {user?.displayName && <Link onClick={() => toggleMenu()} className="mr-5" href={"/profile"}>{user?.displayName}</Link>}
+            {!user?.displayName && <Link onClick={() => toggleMenu()} className="mr-5" href={"/profile"}>{user?.email}</Link>}
               {/* <div className="rounded-full overflow-hidden w-fit">
                 <Image 
                   src="/pic.jpeg"
